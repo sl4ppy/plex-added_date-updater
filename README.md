@@ -56,37 +56,50 @@ $env:PLEX_TOKEN="your-token-here"
 
 ## Usage
 
-**Note:** Ensure your virtual environment is active (`source bin/activate`) before running.
+**Important:** Because this script relies on libraries installed in your virtual environment, you must use one of the two methods below to run it.
 
-### 1. View Help
-To see all available options and flags:
-
-```bash
-python update_plex_date.py --help
-```
-
-### 2. Basic Single Update
-Updates a movie to a specific date.
+### Method A: Activate, then Run (Standard)
+First, activate the environment so your terminal knows where to find the libraries.
 
 ```bash
+source bin/activate
+# You should see (plex) or similar in your prompt
 python update_plex_date.py --title "Piranha 3D" --date "2022-08-21"
 ```
 
-### 3. Interactive Mode (Fuzzy Search)
+### Method B: Direct Execution (One-Liner)
+You can run the script without activating the environment by pointing directly to the Python binary inside the `bin` folder.
+
+```bash
+./bin/python update_plex_date.py --title "Piranha 3D" --date "2022-08-21"
+```
+
+---
+
+### Examples
+
+#### 1. View Help
+To see all available options and flags:
+
+```bash
+./bin/python update_plex_date.py --help
+```
+
+#### 2. Interactive Mode (Fuzzy Search)
 Don't remember the exact title? Use `-i` to search and select from a list.
 
 ```bash
-python update_plex_date.py --title "Star Wars" --date "1977-05-25" -i
+./bin/python update_plex_date.py --title "Star Wars" --date "1977-05-25" -i
 ```
 
-### 4. Handling Duplicates (Year)
+#### 3. Handling Duplicates (Year)
 If you have remakes (e.g., *The Mummy* 1999 vs 2017), specify the year to target the correct one.
 
 ```bash
-python update_plex_date.py --title "The Mummy" --year 1999 --date "2020-01-01"
+./bin/python update_plex_date.py --title "The Mummy" --year 1999 --date "2020-01-01"
 ```
 
-### 5. Bulk Update via CSV
+#### 4. Bulk Update via CSV
 Update many movies at once using a CSV file.
 
 **Create a file named `updates.csv`:**
@@ -99,7 +112,7 @@ Interstellar, 2014-11-07,
 
 **Run the script:**
 ```bash
-python update_plex_date.py --csv updates.csv
+./bin/python update_plex_date.py --csv updates.csv
 ```
 
 ## Arguments Reference
@@ -122,6 +135,7 @@ Copy and paste that command into your terminal to revert the item to its origina
 
 ## Troubleshooting
 
+* **Module not found:** You likely forgot to run `source bin/activate` or use `./bin/python`.
 * **Item not found:** Try adding `-i` to search interactively.
 * **Multiple items found:** Add `-y` followed by the release year to clarify which movie you mean.
 * **Connection Error:** Verify `PLEX_TOKEN` and `PLEX_URL` are correct and the server is running.
