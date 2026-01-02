@@ -6,10 +6,10 @@ This script is useful if you have migrated your Plex library, replaced file vers
 
 ## Features
 
-* **Interactive Mode:** Fuzzy search helper if you don't know the exact file title.
+* **Interactive Table:** If a search is ambiguous (e.g., "Star Wars"), the script presents a clean, numbered table of all matches so you can select the correct one.
 * **Bulk Updates:** Support for processing hundreds of items at once via CSV.
-* **Safety First:** "Dry Run" mode to preview changes and automatic "Undo Command" generation.
-* **Precision:** optional Year filtering to handle remakes (e.g., *Halloween* 1978 vs 2007).
+* **Safety First:** "Dry Run" mode to preview changes and automatic "Undo Command" generation after every successful edit.
+* **Precision:** Optional Year filtering to handle remakes (e.g., *Halloween* 1978 vs 2007).
 * **Secure:** Supports Environment Variables for credentials.
 
 ## Prerequisites
@@ -78,22 +78,33 @@ You can run the script without activating the environment by pointing directly t
 
 ### Examples
 
-#### 1. View Help
-To see all available options and flags:
-
-```bash
-./bin/python update_plex_date.py --help
-```
-
-#### 2. Interactive Mode (Fuzzy Search)
-Don't remember the exact title? Use `-i` to search and select from a list.
+#### 1. Interactive Mode (Recommended)
+If you aren't sure of the exact title or year, use `-i`. This will search Plex and display a table of all partial matches.
 
 ```bash
 ./bin/python update_plex_date.py --title "Star Wars" --date "1977-05-25" -i
 ```
 
+**Output:**
+```text
+--- SEARCH RESULTS FOR 'Star Wars' ---
+ID   YEAR   CURRENT ADDED DATE     TITLE
+--------------------------------------------------------------------------------
+1    1977   2023-01-10 14:00:00    Star Wars: Episode IV - A New Hope
+2    1980   2023-01-10 14:05:00    Star Wars: Episode V - The Empire Strikes Back
+...
+Select ID (or Enter to quit): 1
+```
+
+#### 2. Exact Match
+If you know the exact title, you can run it without interaction.
+
+```bash
+./bin/python update_plex_date.py --title "Piranha 3D" --date "2022-08-21"
+```
+
 #### 3. Handling Duplicates (Year)
-If you have remakes (e.g., *The Mummy* 1999 vs 2017), specify the year to target the correct one.
+If you have remakes (e.g., *The Mummy* 1999 vs 2017), specify the year to filter automatically.
 
 ```bash
 ./bin/python update_plex_date.py --title "The Mummy" --year 1999 --date "2020-01-01"
@@ -119,11 +130,11 @@ Interstellar, 2014-11-07,
 
 | Flag | Description |
 | :--- | :--- |
-| `-t`, `--title` | Exact title of the item to update. |
+| `-t`, `--title` | Title of the item to update. |
 | `-d`, `--date` | New date (`YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`). |
+| `-i`, `--interactive` | Force the interactive selection table to appear. |
 | `--csv` | Path to a CSV file for bulk updates. |
 | `-y`, `--year` | Release year (useful for remakes/duplicates). |
-| `-i`, `--interactive` | Prompt user to select from partial matches if exact match fails. |
 | `-l`, `--library` | Library section to search (Default: "Movies"). |
 | `--dry-run` | Preview changes without modifying the database. |
 | `--token` | Plex Authentication Token. |
@@ -136,6 +147,4 @@ Copy and paste that command into your terminal to revert the item to its origina
 ## Troubleshooting
 
 * **Module not found:** You likely forgot to run `source bin/activate` or use `./bin/python`.
-* **Item not found:** Try adding `-i` to search interactively.
-* **Multiple items found:** Add `-y` followed by the release year to clarify which movie you mean.
 * **Connection Error:** Verify `PLEX_TOKEN` and `PLEX_URL` are correct and the server is running.
