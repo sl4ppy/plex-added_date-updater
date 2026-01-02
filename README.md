@@ -1,5 +1,9 @@
 # Plex Metadata Date Updater
 
+#A robust, user-friendly command-line tool to modify the "Date Added" metadata for items in your Plex Media Server.
+
+##This script is useful if you have migrated your Plex library, replaced file versions, or manually added content and want to preserve or correct the order in which items appear in the "Recently Added" hub.
+
 > [!WARNING]
 > **BACK UP YOUR DATABASE FIRST**
 > This script modifies your Plex database metadata. While it includes safety features like "Dry Run" and "Undo" commands, mistakes happen.
@@ -8,10 +12,6 @@
 > * It is strongly recommended to **back up your Plex Media Server database** before running this script on your live library.
 > * **[Click here for official instructions on how to back up your Plex Database.](https://support.plex.tv/articles/201539237-backing-up-plex-media-server-data/)**
 > * Use the `--dry-run` flag first to verify everything looks correct.
-
-A robust, user-friendly command-line tool to modify the "Date Added" metadata for items in your Plex Media Server.
-
-This script is useful if you have migrated your Plex library, replaced file versions, or manually added content and want to preserve or correct the order in which items appear in the "Recently Added" hub.
 
 ## Features
 
