@@ -6,6 +6,7 @@
 >
 > * **We are not responsible** for any data loss, library corruption, or other issues that may arise from using this tool.
 > * It is strongly recommended to **back up your Plex Media Server database** before running this script on your live library.
+> * **[Click here for official instructions on how to back up your Plex Database.](https://support.plex.tv/articles/201539237-backing-up-plex-media-server-data/)**
 > * Use the `--dry-run` flag first to verify everything looks correct.
 
 A robust, user-friendly command-line tool to modify the "Date Added" metadata for items in your Plex Media Server.
