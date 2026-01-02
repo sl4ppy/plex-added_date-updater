@@ -1,8 +1,8 @@
 # Plex Metadata Date Updater
 
-## A robust, user-friendly command-line tool to modify the "Date Added" metadata for items in your Plex Media Server.
+# A robust, user-friendly command-line tool to modify the "Date Added" metadata for items in your Plex Media Server.
 
-## This script is useful if you have migrated your Plex library, replaced file versions, or manually added content and want to preserve or correct the order in which items appear in the "Recently Added" hub.
+# This script is useful if you have migrated your Plex library, replaced file versions, or manually added content and want to preserve or correct the order in which items appear in the "Recently Added" hub.
 
 > [!WARNING]
 > **BACK UP YOUR DATABASE FIRST**
