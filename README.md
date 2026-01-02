@@ -1,16 +1,16 @@
 # Plex Metadata Date Updater
 
-A robust, user-friendly command-line tool to modify the "Date Added" metadata for items in your Plex Media Server. 
+A robust, user-friendly command-line tool to modify the "Date Added" metadata for items in your Plex Media Server.
 
 This script is useful if you have migrated your Plex library, replaced file versions, or manually added content and want to preserve or correct the order in which items appear in the "Recently Added" hub.
 
 ## Features
 
-* **Robust Search:** Safely searches for items and confirms they exist before attempting edits.
-* **Dry Run Mode:** Preview what changes will be made without actually altering your database.
-* **Secure:** Supports Environment Variables for Plex Tokens to keep credentials out of your command history.
-* **Flexible:** Works on Movies, TV Shows, or any other library section.
-* **Date Parsing:** Accepts both `YYYY-MM-DD` and `YYYY-MM-DD HH:MM:SS` formats.
+* **Interactive Mode:** Fuzzy search helper if you don't know the exact file title.
+* **Bulk Updates:** Support for processing hundreds of items at once via CSV.
+* **Safety First:** "Dry Run" mode to preview changes and automatic "Undo Command" generation.
+* **Precision:** optional Year filtering to handle remakes (e.g., *Halloween* 1978 vs 2007).
+* **Secure:** Supports Environment Variables for credentials.
 
 ## Prerequisites
 
@@ -19,9 +19,8 @@ This script is useful if you have migrated your Plex library, replaced file vers
 
 ### Installation
 
-1.  Clone this repository or download the script.
-
-2.  Create and activate a virtual environment (recommended to keep dependencies isolated):
+1.  Clone this repository.
+2.  Create and activate a virtual environment (recommended):
 
     **Linux / macOS:**
     ```bash
@@ -35,93 +34,94 @@ This script is useful if you have migrated your Plex library, replaced file vers
     .\Scripts\activate
     ```
 
-3.  Install the required dependency:
-
+3.  Install the dependency:
     ```bash
     pip install plexapi
     ```
 
 ## Configuration
 
-To connect to your Plex Server, you need your **Plex Token**.
+Set your Plex Token as an environment variable (Recommended):
 
-### Option A: Environment Variables (Recommended)
-Setting your token as an environment variable is more secure than typing it in the command line.
-
-**Linux / macOS:**
 ```bash
-export PLEX_TOKEN="your-plex-token-here"
-export PLEX_URL="http://localhost:32400" # Optional, defaults to localhost
+# Linux / macOS
+export PLEX_TOKEN="your-token-here"
+export PLEX_URL="http://localhost:32400"
+
+# Windows Powershell
+$env:PLEX_TOKEN="your-token-here"
 ```
 
-**Windows (PowerShell):**
-```powershell
-$env:PLEX_TOKEN="your-plex-token-here"
-```
-
-### Option B: Command Line Arguments
-You can also pass the token directly using the `--token` flag (see usage below).
+*Alternatively, you can pass `--token` and `--server` as arguments to the script.*
 
 ## Usage
 
-**Important:** Before running these commands, ensure your virtual environment is active.
-```bash
-source bin/activate
-```
-*(You will see `(plex)` or similar in your terminal prompt when active).*
+**Note:** Ensure your virtual environment is active (`source bin/activate`) before running.
 
-### 1. Basic Update (Movies)
-By default, the script looks in the "Movies" library.
+### 1. View Help
+To see all available options and flags:
+
+```bash
+python update_plex_date.py --help
+```
+
+### 2. Basic Single Update
+Updates a movie to a specific date.
 
 ```bash
 python update_plex_date.py --title "Piranha 3D" --date "2022-08-21"
 ```
 
-### 2. Dry Run (Safety Check)
-Use `--dry-run` to see if the script can find the movie and parse the date correctly, without actually writing to the Plex database.
+### 3. Interactive Mode (Fuzzy Search)
+Don't remember the exact title? Use `-i` to search and select from a list.
 
 ```bash
-python update_plex_date.py --title "Avatar" --date "2023-01-01" --dry-run
+python update_plex_date.py --title "Star Wars" --date "1977-05-25" -i
 ```
 
-### 3. Updating TV Shows
-If you want to update a show, specify the library name using `-l`.
+### 4. Handling Duplicates (Year)
+If you have remakes (e.g., *The Mummy* 1999 vs 2017), specify the year to target the correct one.
 
 ```bash
-python update_plex_date.py --library "TV Shows" --title "The Office" --date "2015-05-20"
+python update_plex_date.py --title "The Mummy" --year 1999 --date "2020-01-01"
 ```
 
-### 4. Specifying Time
-You can provide a specific time stamp. If omitted, it defaults to midnight (00:00:00).
+### 5. Bulk Update via CSV
+Update many movies at once using a CSV file.
 
-```bash
-python update_plex_date.py --title "Inception" --date "2020-01-01 14:30:00"
+**Create a file named `updates.csv`:**
+```csv
+The Matrix, 1999-03-31, 1999
+Inception, 2010-07-16
+Interstellar, 2014-11-07,
 ```
+*(Format: `Title, Date, Year(Optional)`)*
 
-### Pro Tip: Running without activating
-If you want to run this script simply (or via a cron job) without manually activating the environment every time, call the Python executable inside `bin/` directly:
-
+**Run the script:**
 ```bash
-./bin/python update_plex_date.py --title "Piranha 3D" --date "2022-08-21"
+python update_plex_date.py --csv updates.csv
 ```
 
 ## Arguments Reference
 
-| Flag | Long Flag | Required? | Description |
-| :--- | :--- | :--- | :--- |
-| `-t` | `--title` | **Yes** | The exact title of the item to update. |
-| `-d` | `--date` | **Yes** | New date (`YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`). |
-| `-l` | `--library` | No | Library section to search. Default: `Movies`. |
-| | `--dry-run` | No | If set, no changes will be made to the server. |
-| | `--token` | No | Your Plex Authentication Token (if not set in env vars). |
-| | `--server` | No | Plex Server URL. Default: `http://localhost:32400`. |
+| Flag | Description |
+| :--- | :--- |
+| `-t`, `--title` | Exact title of the item to update. |
+| `-d`, `--date` | New date (`YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`). |
+| `--csv` | Path to a CSV file for bulk updates. |
+| `-y`, `--year` | Release year (useful for remakes/duplicates). |
+| `-i`, `--interactive` | Prompt user to select from partial matches if exact match fails. |
+| `-l`, `--library` | Library section to search (Default: "Movies"). |
+| `--dry-run` | Preview changes without modifying the database. |
+| `--token` | Plex Authentication Token. |
+| `--server` | Plex Server URL. |
+
+## Undo / Restore
+Every time the script runs successfully, it prints a **Restore Command** in the output.
+Copy and paste that command into your terminal to revert the item to its original "Added At" date.
 
 ## Troubleshooting
 
-* **Item not found:** Ensure the title matches exactly as it appears in Plex. If the movie has a year in the title within Plex (e.g., "Halloween (1978)"), you must include it.
-* **Unauthorized:** Your Token is likely incorrect or expired. 
-* **Connection Error:** Ensure Plex is running and the `PLEX_URL` is reachable from the machine running this script.
-
-## License
-
-This project is open source. Feel free to modify and distribute.
+* **Item not found:** Try adding `-i` to search interactively.
+* **Multiple items found:** Add `-y` followed by the release year to clarify which movie you mean.
+* **Connection Error:** Verify `PLEX_TOKEN` and `PLEX_URL` are correct and the server is running.
